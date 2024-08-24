@@ -1,6 +1,6 @@
 {
 	"name": "docent",
-	"title": "Lore Master",
+	"title": "Docent",
 	"description": ".",
 	"version": "0.0.2",
 	"scripts": ["bundle.js"],
