@@ -9,7 +9,7 @@ This is a relatively barebones module template for FoundryVTT. It is built using
 - The Logger class inside of Utils exists to log with neat colours and proper timestamps with all log messages. Use this over console.log.
 
 ## Foundry Path
-For the build pipeline to work properly you must define an environment variable called `FOUDNRY_PATH` that points to the save data directory. Example: 
+For the build pipeline to work properly you must define an environment variable called `FOUNDRY_PATH` that points to the save data directory. Example: 
 Windows Powershell:
 `[Environment]::SetEnvironmentVariable("FOUNDRY_PATH", ${Env:localappdata}+"\FoundryVTT", "User")`
 
