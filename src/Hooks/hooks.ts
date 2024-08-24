@@ -1,8 +1,9 @@
 import { JournalEntryData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs";
+import { convert } from "html-to-text";
 
-import Logger from "../Utils/Logger";
+import Logger from "../utils/Logger";
 
-
+// TODO: 5e Typing
 declare class JournalSheet5e extends JournalSheet{
 	pageIndex: number;
 	_pages: [];
@@ -21,59 +22,30 @@ export async function initCustomHooks(): Promise<void> {
 	})
 }
 
+const enum ContentType {
+	TEXT = "text",
+}
+
 async function sendJournal(sheet: any ): Promise<void> {
-	console.log({sheet});
     const pageIndex = sheet.pageIndex;
-	Logger.Warn(`Current Index: ${pageIndex}}`)
-
-
 	const currentPageData = sheet._pages[pageIndex];
-	console.log({currentPageData});
-
+	const currentPageContentType = currentPageData.type;
 	const currentPageContent = currentPageData.text.content;
 
-	const pageType = currentPageData.type;
 
-	// console.log({pageData});
-    // let formData = new FormData();
-    // let embeds = [];
-    // let msgText = "";
-    // switch (pageData.type) {
-    //     case "text":
-    //         embeds = [{
-    //             author: { name: "From Journal " + sheet.title },
-    //             title: pageData.name,
-    //             description: await messageParser.formatText(await toHTML(pageData.text.content))
-    //         }];
-    //         break;
-    //     case "image":
-    //         embeds = [{
-    //             author: { name: "From Journal " + sheet.title },
-    //             title: pageData.name,
-    //             image: {
-    //                 url: await generateimglink(pageData.src)
-    //             },
-    //             footer: {
-    //                 text: pageData.image.caption
-    //             }
-    //         }];
-    //         break;
-    //     case "video":
-    //         if (pageData.src.includes("http")) {
-    //             msgText = pageData.src;
-    //         } else {
-    //             if (getThisModuleSetting('inviteURL') !== "http://") {
-    //                 msgText = (getThisModuleSetting('inviteURL') + pageData.src);
-    //             }
-    //             else {
-    //                 ui.notifications.error("foundrytodiscord | Invite URL not set!");
-    //             }
-    //         }
-    //         break;
-    //     default:
-    //         ui.notifications.warn("Journal page type not supported.");
-    //         break;
-    // }
+	const pageTitle = currentPageData.name;
+	let formattedText = "";
+    switch (currentPageContentType) {
+        case ContentType.TEXT:
+			formattedText = convert(currentPageContent);
+			Logger.Ok(`${pageTitle}`);
+			Logger.Ok(`${formattedText}`);
+			// Discord Step
+            break;
+        default:
+			Logger.Err("Journal page type not supported.");
+            break;
+    }
     // if (embeds.length > 0 || msgText !== "") {
         // const user = game.user;
         // const username = user.name;

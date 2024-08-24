@@ -1,6 +1,6 @@
-import Logger from "./Utils/Logger";
+import Logger from "./utils/Logger";
 import PreloadTemplates from "./PreloadTemplates";
-import { RegisterSettings } from "./Utils/Settings";
+import { RegisterSettings } from "./utils/Settings";
 import { initCustomHooks } from "./Hooks/hooks";
 
 Hooks.once("init", async () => {
