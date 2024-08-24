@@ -1,10 +1,11 @@
 import Logger from "./Utils/Logger";
 import PreloadTemplates from "./PreloadTemplates";
 import { RegisterSettings } from "./Utils/Settings";
+import { initCustomHooks } from "./Hooks/hooks";
 
 Hooks.once("init", async () => {
 	RegisterSettings();
-	// init hooks
+	initCustomHooks();
 	await PreloadTemplates();
 });
 

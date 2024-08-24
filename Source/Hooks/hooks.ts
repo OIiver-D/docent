@@ -7,7 +7,7 @@ export async function initCustomHooks(): Promise<void> {
 			class: "sync-journal",
 			icon: "fas fa-rotate",
 			label: "Sync Journal",
-			onclick: () => {Logger.Log("Sync Journal Entry")},
+			onclick: () => {Logger.Log(`Sync Journal Entry , ${sheet.object}`, )},
 		});
 	})
 }
