@@ -39,8 +39,10 @@ import less from "gulp-less";
 
 import Logger from "./src/utils/Logger";
 import {ModuleData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/packages.mjs";
+// import { ModuleData } from "@league-of-foundry-developers/foundry-vtt-types";
 import browserify from "browserify";
-import tsify = require("tsify");
+import tsify from "tsify";
+
 
 const ts = require("gulp-typescript");
 
@@ -354,7 +356,7 @@ async function packageBuild() {
 				throw err;
 			});
 
-			zip.pipe(zipFile);
+			zip.pipe(zipFile as any as NodeJS.WritableStream);
 
 			zip.directory(path.join(process.cwd(), 'dist'), false);
 			return zip.finalize();
