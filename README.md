@@ -41,7 +41,7 @@ The following commands are built into the project.
 - npm run build
 - npm run build:watch
 - npm run clean
-- npm run package "1.0.1" (replace the version number here with whatever version you are publishing)
+- npm run package "1.0.0" (replace the version number here with whatever version you are publishing)
 
 Build will convert all of your TS files into a single bundle.js, and all of your less style sheets into css versions (remember to have them included in your module.json)
 build:watch will rebuild whenever the files change

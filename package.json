@@ -1,5 +1,5 @@
 {
-	"name": "loremaster",
+	"name": "docent",
 	"version": "0.0.2",
 	"description": "",
 	"main": "index.js",
@@ -48,5 +48,8 @@
 		"vinyl-buffer": "^1.0.1",
 		"vinyl-source-stream": "^2.0.0",
 		"yargs": "^17.1.1"
+	},
+	"dependencies": {
+		"discord.js": "^14.15.3"
 	}
 }
