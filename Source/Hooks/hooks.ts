@@ -1,8 +1,17 @@
+import { JournalEntryData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs";
+
 import Logger from "../Utils/Logger";
 
 
+declare class JournalSheet5e extends JournalSheet{
+	pageIndex: number;
+	_pages: [];
+}
+
+
+
 export async function initCustomHooks(): Promise<void> {
-	Hooks.on<Hooks.GetApplicationHeaderButtons<JournalSheet>>('getJournalSheetHeaderButtons', (sheet, buttons ) => {
+	Hooks.on<Hooks.GetApplicationHeaderButtons<JournalSheet5e>>('getJournalSheetHeaderButtons', (sheet, buttons ) => {
 		buttons.unshift({
 			class: "sync-journal",
 			icon: "fas fa-rotate",
@@ -12,11 +21,20 @@ export async function initCustomHooks(): Promise<void> {
 	})
 }
 
-async function sendJournal(sheet: any): Promise<void> {
+async function sendJournal(sheet: any ): Promise<void> {
 	console.log({sheet});
     const pageIndex = sheet.pageIndex;
-    const pageData = sheet.pages[pageIndex];
-	console.log({pageData});
+	Logger.Warn(`Current Index: ${pageIndex}}`)
+
+
+	const currentPageData = sheet._pages[pageIndex];
+	console.log({currentPageData});
+
+	const currentPageContent = currentPageData.text.content;
+
+	const pageType = currentPageData.type;
+
+	// console.log({pageData});
     // let formData = new FormData();
     // let embeds = [];
     // let msgText = "";

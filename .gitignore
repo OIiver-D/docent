@@ -6,3 +6,4 @@ Source/packs/
 Source/generators/
 dist
 .DS_Store
+mock_data
