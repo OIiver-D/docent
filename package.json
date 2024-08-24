@@ -1,6 +1,6 @@
 {
-	"name": "lazrius-foundry-template",
-	"version": "1.0.0",
+	"name": "loremaster",
+	"version": "0.0.1",
 	"description": "",
 	"main": "index.js",
 	"scripts": {
@@ -14,7 +14,7 @@
 	"license": "GPLv3",
 	"devDependencies": {
 		"@babel/core": "^7.15.0",
-		"@league-of-foundry-developers/foundry-vtt-types": "^0.8.9-2",
+		"@league-of-foundry-developers/foundry-vtt-types": "^0.8.9-8",
 		"@types/archiver": "^5.1.1",
 		"@types/browserify": "^12.0.37",
 		"@types/color": "^3.0.2",
