@@ -1,8 +1,7 @@
 import { convert } from "html-to-text";
-import Logger from "../Logger";
-import {  getSettingValue, ValidSetting } from "../Settings";
+import {  getSettingValue } from "../Settings";
 import { discordRequestQueue } from "../..";
-import { JournalContentType, MAX_DISCORD_MESSAGE_LENGTH } from "../../Globals";
+import { JournalContentType, MAX_DISCORD_MESSAGE_LENGTH, NotificationType, ValidSetting } from "../../Globals";
 import { useSendUiNotification } from "./useSendUiNotification";
 import { useSyncJournalPopup } from "./useSyncJournalPopup";
 
@@ -32,8 +31,6 @@ export async function sendJournal(sheet: any, threadId: string ): Promise<void> 
 	const currentPageContentType = currentPageData.type;
 	const currentPageContent = currentPageData.text.content;
 
-
-	const pageTitle = currentPageData.name;
 	let formattedText = "";
     switch (currentPageContentType) {
         case JournalContentType.TEXT:
@@ -61,10 +58,6 @@ export async function sendJournal(sheet: any, threadId: string ): Promise<void> 
 
 }
 
-export enum NotificationType {
-	ERROR = "error",
-	INFO = "info",
-}
 
 
 

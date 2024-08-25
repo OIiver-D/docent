@@ -1,11 +1,10 @@
-import Globals, {Assert, Pair} from "../Globals";
+import Globals, {Assert, Pair, ValidSetting} from "../Globals";
 import Logger from "./Logger";
 
 class Settings {
 	private constructor() {
 		Logger.Ok("Loading configuration settings.")
 		this.SettingsList = [
-			// Add settings items here
 			[ValidSetting.WebHookUrl, {
 				name: "Webhook URL",
 				scope: "world",
@@ -56,10 +55,7 @@ class Settings {
 
 export const RegisterSettings = (): void => Settings.Get().RegisterSettings();
 
-export enum ValidSetting {
-	WebHookUrl = "webHookURL",
-	AutoSyncJournal = "autoSyncJournal"
-}
+
 
 export const GetSetting = <T>(setting: ValidSetting): T | null => {
 	const found = Settings.Get().SettingsList.find(x => x[0] === setting);
@@ -68,8 +64,9 @@ export const GetSetting = <T>(setting: ValidSetting): T | null => {
 
 export function getSettingValue(settingName: ValidSetting) {
     try {
-		// @ts-ignore
-        return game.settings.get('docent', settingName);
+		Assert(game instanceof Game);
+		const g = game as Game;
+        return g.settings.get('docent', settingName);
     }
     catch (e) {
         return undefined;
