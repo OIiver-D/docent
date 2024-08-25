@@ -37,10 +37,12 @@ import {
 } from "typescript";
 import less from "gulp-less";
 
-import Logger from "./Source/Utils/Logger";
+import Logger from "./src/utils/Logger";
 import {ModuleData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/packages.mjs";
+// import { ModuleData } from "@league-of-foundry-developers/foundry-vtt-types";
 import browserify from "browserify";
-import tsify = require("tsify");
+import tsify from "tsify";
+
 
 const ts = require("gulp-typescript");
 
@@ -72,8 +74,8 @@ const getManifest = (): Manifest | null => {
 		name: ""
 	};
 
-	if (fs.existsSync("Source")) {
-		json.root = "Source";
+	if (fs.existsSync("src")) {
+		json.root = "src";
 	} else {
 		json.root = "dist";
 	}
@@ -144,13 +146,13 @@ function buildTS() {
 		.pipe(tsConfig());
 
 	return res.js
-		.pipe(sourcemaps.write('', { debug: debug, includeContent: true, sourceRoot: './ts/Source' }))
+		.pipe(sourcemaps.write('', { debug: debug, includeContent: true, sourceRoot: './ts/src' }))
 		.pipe(gulp.dest("dist"));
 }
 
 const bundleModule = () => {
 	const debug = argv.dbg || argv.debug;
-	const bsfy = browserify(path.join(__dirname, "Source/index.ts"), { debug: debug });
+	const bsfy = browserify(path.join(__dirname, "src/index.ts"), { debug: debug });
 	return bsfy.on('error', Logger.Err)
 		.plugin(tsify)
 		.bundle()
@@ -163,7 +165,7 @@ const bundleModule = () => {
 }
 
 const buildLess = () => {
-	return gulp.src("Source/Style/*.less").pipe(less()).pipe(gulp.dest("dist"));
+	return gulp.src("src/style/*.less").pipe(less()).pipe(gulp.dest("dist"));
 }
 
 const copyFiles = async() => {
@@ -197,7 +199,7 @@ const copyFiles = async() => {
 		});
 	};
 	try {
-		await fs.copyFile(path.join("Source/module.json"), path.join("dist/module.json"));
+		await fs.copyFile(path.join("src/module.json"), path.join("dist/module.json"));
 		if (!fs.existsSync(path.resolve(__dirname, "Assets")))
 			return Promise.resolve();
 
@@ -246,9 +248,9 @@ const cleanDist = async () => {
  * Watch for changes for each build step
  */
 const buildWatch = () => {
-	gulp.watch("Source/**/*.ts", { ignoreInitial: false }, gulp.series(buildTS, bundleModule));
-	gulp.watch("Source/**/*.less", { ignoreInitial: false }, buildLess);
-	gulp.watch(["Source/fonts", "Source/lang", "Source/templates", "Source/*.json"], { ignoreInitial: false }, copyFiles);
+	gulp.watch("src/**/*.ts", { ignoreInitial: false }, gulp.series(buildTS, bundleModule));
+	gulp.watch("src/**/*.less", { ignoreInitial: false }, buildLess);
+	gulp.watch(["src/fonts", "src/lang", "src/templates", "src/*.json"], { ignoreInitial: false }, copyFiles);
 }
 
 /********************/
@@ -279,9 +281,9 @@ const linkUserData = async () => {
 
 	let destDir;
 	try {
-		if (fs.existsSync(path.resolve(".", "dist", "module.json")) || fs.existsSync(path.resolve(".", "Source", "module.json"))) {
+		if (fs.existsSync(path.resolve(".", "dist", "module.json")) || fs.existsSync(path.resolve(".", "src", "module.json"))) {
 			destDir = "modules";
-		} else if (fs.existsSync(path.resolve(".", "dist", "system.json")) || fs.existsSync(path.resolve(".", "Source", "system.json"))) {
+		} else if (fs.existsSync(path.resolve(".", "dist", "system.json")) || fs.existsSync(path.resolve(".", "src", "system.json"))) {
 			destDir = "systems";
 		} else {
 			throw Error(`Could not find module.json or system.json`);
@@ -354,7 +356,7 @@ async function packageBuild() {
 				throw err;
 			});
 
-			zip.pipe(zipFile);
+			zip.pipe(zipFile as any as NodeJS.WritableStream);
 
 			zip.directory(path.join(process.cwd(), 'dist'), false);
 			return zip.finalize();
@@ -458,7 +460,7 @@ const gitTaskManifest = (cb: gulp.TaskFunctionCallback) => {
 	if (!manifest)
 		return cb(Error("could not load manifest."));
 
-	return gulp.src([`package.json`, `Source/module.json`])
+	return gulp.src([`package.json`, `src/module.json`])
 		.pipe(git.add({ args: "--no-all -f" }))
 		.pipe(git.commit(`v${manifest.file.version}`, { args: "-a", disableAppendPaths: true }))
 }
