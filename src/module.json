@@ -2,7 +2,7 @@
 	"name": "docent",
 	"title": "Docent",
 	"description": ".",
-	"version": "1.0.0",
+	"version": "1.0.3",
 	"scripts": ["bundle.js"],
 	"styles": ["docent.css"],
 	"languages": [],
@@ -10,5 +10,5 @@
 	"compatibleCoreVersion": "0.8.8",
 	"url": "https://github.com/OIiver-D/docent",
 	"manifest": "https://raw.githubusercontent.com/OIiver-D/docent/master/src/module.json",
-	"download": "https://raw.githubusercontent.com/OIiver-D/docent/v1.0.0/dist/docent-v1.0.0.zip"
+	"download": "https://raw.githubusercontent.com/OIiver-D/docent/v1.0.3/dist/docent-v1.0.3.zip"
 }

@@ -146,7 +146,7 @@ function buildTS() {
 		.pipe(tsConfig());
 
 	return res.js
-		.pipe(sourcemaps.write('', { debug: debug, includeContent: true, sourceRoot: './ts/source' }))
+		.pipe(sourcemaps.write('', { debug: debug, includeContent: true, sourceRoot: './ts/src' }))
 		.pipe(gulp.dest("dist"));
 }
 
@@ -460,7 +460,7 @@ const gitTaskManifest = (cb: gulp.TaskFunctionCallback) => {
 	if (!manifest)
 		return cb(Error("could not load manifest."));
 
-	return gulp.src([`package.json`, `source/module.json`])
+	return gulp.src([`package.json`, `src/module.json`])
 		.pipe(git.add({ args: "--no-all -f" }))
 		.pipe(git.commit(`v${manifest.file.version}`, { args: "-a", disableAppendPaths: true }))
 }
