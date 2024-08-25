@@ -24,7 +24,6 @@ export async function useCustomFoundryHooks(): Promise<void> {
 			label: "Sync Journal",
 			onclick: () => useSyncJournalPopup(sheet)
 		});
-		
 	})
 }
 
