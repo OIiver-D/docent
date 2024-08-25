@@ -65,3 +65,13 @@ export const GetSetting = <T>(setting: ValidSetting): T | null => {
 	const found = Settings.Get().SettingsList.find(x => x[0] === setting);
 	return found ? found[1] as unknown as T : null;
 }
+
+export function getSettingValue(settingName: ValidSetting) {
+    try {
+		// @ts-ignore
+        return game.settings.get('docent', settingName);
+    }
+    catch (e) {
+        return undefined;
+    }
+}

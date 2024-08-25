@@ -1,5 +1,3 @@
-import Logger from "./Utils/Logger";
-
 /* A brief explanation of the queueing system:
 * All requests are put into a queue such that everything executes in the order the hooks are detected in-game.
 * This also allows any and all requests to stop if a rate limit is reached.
@@ -10,7 +8,12 @@ import Logger from "./Utils/Logger";
 * previously-sent messages, and for the messages to not be erased after the client reloads their browser.
 */
 
+import Logger from "../utils/Logger";
+
 export class DiscordRequestQueue {
+
+	_requestQueue: any[];
+	_isBusy: boolean;
 
     constructor() {
         this._requestQueue = [];
@@ -23,9 +26,12 @@ export class DiscordRequestQueue {
      * @param {FormData} formData - The FormData object of the message.
      * @returns {Promise<Response>} - A Promise that is resolved with a Response object when the request goes through the queue.
      */
-    sendMessage(hook, formData) {
+    sendMessage(hook: string, formData: FormData): Promise<Response> {
         return new Promise((resolve, reject) => {
             const completeRequestWebhook = `${!hook.includes("wait=true") ? `${hook}${hook.includes("?") ? "&" : "?"}wait=true` : hook}`;
+			console.log(
+				{formData}
+			)
             this._requestQueue.push({
                 hook: completeRequestWebhook,
                 formData: formData,
@@ -43,7 +49,7 @@ export class DiscordRequestQueue {
      * @param {FormData} formData - The FormData object of the message.
      * @returns {Promise<Response>} - A Promise that is resolved with a Response object when the request goes through the queue.
      */
-    editMessage(hook, formData) {
+    editMessage(hook: string, formData: FormData): Promise<Response> {
         return new Promise((resolve, reject) => {
             this._requestQueue.push({
                 hook: hook,
@@ -61,7 +67,7 @@ export class DiscordRequestQueue {
      * @param {string} hook - The webhook link appended with /messages/ and the Discord Message ID.
      * @returns {Promise<Response>} - A Promise that is resolved with a Response object when the request goes through the queue.
      */
-    deleteMessage(hook) {
+    deleteMessage(hook: string): Promise<Response> {
         return new Promise((resolve, reject) => {
             this._requestQueue.push({
                 hook: hook,
@@ -80,7 +86,7 @@ export class DiscordRequestQueue {
      * @param {string} chatMessageID - The ID of the ChatMessage object that the Discord Message is linked to.
      * @returns {Promise<Response>} - A Promise that is resolved with a Response object when the request goes through the queue.
      */
-    deleteLinkedMessage(hook, chatMessageID) {
+    deleteLinkedMessage(hook: string, chatMessageID: string): Promise<Response> {
         return new Promise((resolve, reject) => {
             this._requestQueue.push({
                 hook: hook,
@@ -110,33 +116,31 @@ export class DiscordRequestQueue {
 
         if (!method || !["POST", "PATCH", "DELETE"].includes(method)) {
             this._requestQueue.shift();
-            Logger.ERR("foundrytodiscord | Unknown request method.");
+            Logger.Err("foundrytodiscord | Unknown request method.");
             this.#progressQueue();
             return;
         }
 
-        Logger.ERR(`foundrytodiscord | Attempting ${method} request...`)
+        Logger.Err(`foundrytodiscord | Attempting ${method} request...`)
         if (method === "DELETE") {
             if (ignoreRescuePartyFor === 0) {
                 // Message flush rescue party!
                 await this.#delay(250); // wait for more requests
                 if (this._requestQueue.length > 1 && this._requestQueue[1].method === "DELETE" && this._requestQueue[0].msgID !== this._requestQueue[1].msgID) {
-                    Logger.log("foundrytodiscord | You're trying to delete two or more messages in quick succession. Thinking...");
+                    Logger.Ok("foundrytodiscord | You're trying to delete two or more messages in quick succession. Thinking...");
                     await this.#delay(1000);
                     const countedDeletions = this.#countSuccessiveDeletions();
                     if (countedDeletions > 10) {
-                        Logger('foundrytodiscord | Rescue party!');
-                        Logger.log("foundrytodiscord | Deletion rescue party triggered! More than 10 simultaneous deletions detected.");
-                        Logger.log("foundrytodiscord | ඞඞඞඞඞ You called? We're going to clean the message queue! ඞඞඞඞඞ");
-                        Logger.log("foundrytodiscord | Request queue cleared. Next request in 5 seconds...");
-                        Logger.groupEnd();
+                        Logger.Ok("foundrytodiscord | Deletion rescue party triggered! More than 10 simultaneous deletions detected.");
+                        Logger.Ok("foundrytodiscord | ඞඞඞඞඞ You called? We're going to clean the message queue! ඞඞඞඞඞ");
+                        Logger.Ok("foundrytodiscord | Request queue cleared. Next request in 5 seconds...");
                         this.#clearQueue();
                         await this.#delay(5000);
                         this.#progressQueue();
                         return;
                     }
                     else {
-                        Logger.log("foundrytodiscord | Deletion rescue party not triggered. Moving along...")
+                        Logger.Warn("foundrytodiscord | Deletion rescue party not triggered. Moving along...")
                         ignoreRescuePartyFor = 10;
                     }
                 }
@@ -158,19 +162,19 @@ export class DiscordRequestQueue {
                 }
                 resolve(response);
                 this._requestQueue.shift();
-                Logger.log(`foundrytodiscord | ${method} request succeeded.`);
+                Logger.Ok(`foundrytodiscord | ${method} request succeeded.`);
                 this.#progressQueue(retry, ignoreRescuePartyFor);
             } else if (response.status === 429) {
                 const retryAfter = Number(response.headers.get("Retry-After")) || 1;
-                Logger.log(`foundrytodiscord | Rate Limit exceeded! Next request in ${retryAfter / 100} seconds.`);
+                Logger.Warn(`foundrytodiscord | Rate Limit exceeded! Next request in ${retryAfter / 100} seconds.`);
                 await this.#delay(retryAfter * 10);
                 this.#progressQueue(retry, ignoreRescuePartyFor);
             }
             else {
-                throw new Error(response);
+                throw new Error(response as unknown as string);
             }
-        } catch (response) {
-            Logger.error('foundrytodiscord | Fetch error:', response.status);
+        } catch (response: any) {
+            Logger.Err(`foundrytodiscord | Fetch error: ${response.status}`);
             if (retry >= 2) {
                 if (method === "DELETE") {
                     if (ignoreRescuePartyFor > 0) {
@@ -179,13 +183,13 @@ export class DiscordRequestQueue {
                 }
                 reject(response);
                 this._requestQueue.shift();
-                Logger.log("foundrytodiscord | Request discarded from the queue after retrying 2 times.");
+                Logger.Warn("foundrytodiscord | Request discarded from the queue after retrying 2 times.");
                 retry = 0;
             }
             else {
                 retry++;
             }
-            Logger.log("foundrytodiscord | Retrying...");
+            Logger.Warn("foundrytodiscord | Retrying...");
             this.#progressQueue(retry, ignoreRescuePartyFor);
         }
     }
@@ -198,7 +202,7 @@ export class DiscordRequestQueue {
         }
     }
 
-    #delay(milliseconds) {
+    #delay(milliseconds: number) {
         return new Promise(resolve => {
             setTimeout(resolve, milliseconds);
         });
@@ -226,7 +230,7 @@ export class DiscordRequestQueue {
 
 }
 
-export function delay(milliseconds) {
+export function delay(milliseconds: number) {
     return new Promise(resolve => {
         setTimeout(resolve, milliseconds);
     });
