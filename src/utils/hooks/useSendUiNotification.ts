@@ -1,5 +1,5 @@
-import { NotificationType } from "../../Globals";
 import Logger from "../Logger";
+import { NotificationType } from "./useCustomFoundryHooks";
 
 
 export const useSendUiNotification = (message: string, type: NotificationType): void => {

@@ -1,7 +1,6 @@
 import Logger from "./utils/Logger";
 import PreloadTemplates from "./PreloadTemplates";
 import { RegisterSettings } from "./utils/Settings";
-
 import { DiscordRequestQueue } from "./objects/DiscordRequestQueue";
 import { useCustomFoundryHooks } from "./utils/hooks/useCustomFoundryHooks";
 

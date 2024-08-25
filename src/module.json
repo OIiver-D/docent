@@ -2,13 +2,13 @@
 	"name": "docent",
 	"title": "Docent",
 	"description": ".",
-	"version": "0.0.3",
+	"version": "1.0.0",
 	"scripts": ["bundle.js"],
 	"styles": ["docent.css"],
 	"languages": [],
 	"minimumCoreVersion": "0.8.8",
 	"compatibleCoreVersion": "0.8.8",
 	"url": "https://github.com/OIiver-D/docent",
-	"manifest": "https://raw.githubusercontent.com/OIiver-D/docent/master/source/module.json",
-	"download": "https://raw.githubusercontent.com/OIiver-D/docent/v0.0.3/dist/docent-v0.0.3.zip"
+	"manifest": "https://raw.githubusercontent.com/OIiver-D/docent/master/src/module.json",
+	"download": "https://raw.githubusercontent.com/OIiver-D/docent/v1.0.0/dist/docent-v1.0.0.zip"
 }

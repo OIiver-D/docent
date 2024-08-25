@@ -1,7 +1,7 @@
 import { convert } from "html-to-text";
 import {  getSettingValue } from "../Settings";
 import { discordRequestQueue } from "../..";
-import { JournalContentType, MAX_DISCORD_MESSAGE_LENGTH, NotificationType, ValidSetting } from "../../Globals";
+import { JournalContentType, MAX_DISCORD_MESSAGE_LENGTH, ValidSetting } from "../../constants";
 import { useSendUiNotification } from "./useSendUiNotification";
 import { useSyncJournalPopup } from "./useSyncJournalPopup";
 
@@ -11,6 +11,10 @@ declare class JournalSheet5e extends JournalSheet{
 	_pages: [];
 }
 
+export enum NotificationType {
+	ERROR = "error",
+	INFO = "info",
+}
 
 export async function useCustomFoundryHooks(): Promise<void> {
 	Hooks.on<Hooks.GetApplicationHeaderButtons<JournalSheet5e>>('getJournalSheetHeaderButtons', (sheet, buttons ) => {

@@ -1,4 +1,5 @@
-import Globals, {Assert, Pair, ValidSetting} from "../Globals";
+import { ValidSetting } from "../constants";
+import Globals, {Assert, Pair} from "../Globals";
 import Logger from "./Logger";
 
 class Settings {
